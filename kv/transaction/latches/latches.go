@@ -31,9 +31,10 @@ type Latches struct {
 
 // NewLatches creates a new Latches object for managing a databases latches. There should only be one such object, shared
 // between all threads.
+// 线程共享的资源
 func NewLatches() *Latches {
 	l := new(Latches)
-	l.latchMap = make(map[string]*sync.WaitGroup)
+	l.latchMap = make(map[string]*sync.WaitGroup) // "k1": wg
 	return l
 }
 

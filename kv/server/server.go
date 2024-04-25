@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-
 	"github.com/pingcap-incubator/tinykv/kv/coprocessor"
 	"github.com/pingcap-incubator/tinykv/kv/storage"
 	"github.com/pingcap-incubator/tinykv/kv/storage/raft_storage"
@@ -10,7 +9,6 @@ import (
 	coppb "github.com/pingcap-incubator/tinykv/proto/pkg/coprocessor"
 	"github.com/pingcap-incubator/tinykv/proto/pkg/kvrpcpb"
 	"github.com/pingcap-incubator/tinykv/proto/pkg/tinykvpb"
-	"github.com/pingcap/tidb/kv"
 )
 
 var _ tinykvpb.TinyKvServer = new(Server)
@@ -95,9 +93,9 @@ func (server *Server) Coprocessor(_ context.Context, req *coppb.Request) (*coppb
 		return nil, err
 	}
 	switch req.Tp {
-	case kv.ReqTypeDAG:
+	case 103:
 		return server.copHandler.HandleCopDAGRequest(reader, req), nil
-	case kv.ReqTypeAnalyze:
+	case 104:
 		return server.copHandler.HandleCopAnalyzeRequest(reader, req), nil
 	}
 	return nil, nil

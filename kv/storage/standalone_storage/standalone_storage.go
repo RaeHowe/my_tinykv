@@ -11,7 +11,6 @@ import (
 // StandAloneStorage is an implementation of `Storage` for a single-node TinyKV instance. It does not
 // communicate with other nodes and all data is stored locally.
 type StandAloneStorage struct {
-	// Your Data Here (1).
 	kvDB *badger.DB
 }
 
@@ -38,13 +37,15 @@ func (s *StandAloneStorageReader) Close() {
 }
 
 func NewStandAloneStorage(conf *config.Config) *StandAloneStorage {
-	// Your Code Here (1).
-	return nil
+	return &StandAloneStorage{
+		kvDB: engine_util.CreateDB(conf.DBPath, conf.Raft),
+	}
 }
 
 func (s *StandAloneStorage) Start() error {
-	// Your Code Here (1).
-
+	/*
+		todo: 一些初始化的操作
+	**/
 	return nil
 }
 
@@ -53,7 +54,7 @@ func (s *StandAloneStorage) Stop() error {
 	return nil
 }
 
-// Reader 读取，只读操作
+// Reader 读取，只读操作（方法只返回个reader就行，调用该方法的逻辑会去进行真正的读取操作）
 func (s *StandAloneStorage) Reader(ctx *kvrpcpb.Context) (storage.StorageReader, error) {
 	txn := s.kvDB.NewTransaction(false)
 
@@ -74,4 +75,7 @@ func (s *StandAloneStorage) Write(ctx *kvrpcpb.Context, batch []storage.Modify) 
 			writeBatch.DeleteCF(x.Cf(), x.Key()) //从列簇中删key
 		}
 	}
+
+	//写完memtable的cf之后写库（简化了memtable flush to sst的过程）
+	return writeBatch.WriteToDB(s.kvDB)
 }

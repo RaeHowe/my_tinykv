@@ -76,7 +76,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	handleSignal(grpcServer)
+	handleSignal(grpcServer) //如果接收到退出信号才会停止server
 
 	err = grpcServer.Serve(l)
 	if err != nil {
@@ -93,7 +93,7 @@ func handleSignal(grpcServer *grpc.Server) {
 		syscall.SIGTERM,
 		syscall.SIGQUIT)
 	go func() {
-		sig := <-sigCh
+		sig := <-sigCh //channel如果能读取到内容的话
 		log.Infof("Got signal [%s] to exit.", sig)
 		grpcServer.Stop()
 	}()
