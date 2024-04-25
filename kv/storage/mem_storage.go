@@ -12,10 +12,11 @@ import (
 
 // MemStorage is an in-memory storage engine used for testing. Data is not written to disk, nor sent to other
 // nodes. It is intended for testing only.
+// 类似与rocksdb的memtable
 type MemStorage struct {
-	CfDefault *llrb.LLRB
-	CfLock    *llrb.LLRB
-	CfWrite   *llrb.LLRB
+	CfDefault *llrb.LLRB //default列簇
+	CfLock    *llrb.LLRB //lock列簇
+	CfWrite   *llrb.LLRB //write列簇
 }
 
 func NewMemStorage() *MemStorage {
